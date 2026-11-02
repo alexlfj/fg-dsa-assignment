@@ -4,10 +4,22 @@ Keep this concise and specific to your implementation.
 
 ## 1. Initial analysis
 
-- How are locations and connections represented in the baseline?
-- Which operations appear frequent?
-- Which operation(s) do you predict may scale poorly?
-- What will you investigate first?
+### How are locations and connections represented in the baseline?
+
+They are represented as unsorted arrays, and are constructed with the following properties:
+- Location: ID (int), Name (string), Position (WorldPosition, which is a Vector2), and Type (string)
+- Connection: FromLocationId (int), ToLocationId (int), TravelCost (int).
+
+The `WorldData` then takes those unsorted arrays and creates `ReadOnlyList`.
+
+### Which operations appear frequent?
+The operation that appears the most frequently is linear search, both in `FindLocationByID` and in `FindOutgoingConnections`.
+
+### Which operation(s) do you predict may scale poorly?
+I predict that the linear search operation will scale poorly as it follows O(n) on average.
+
+### What will you investigate first?
+I will investigate how the data is created and represented to see if I can improve the efficiency of the search operation from something better than O(n).
 
 ## 2. Data representation
 

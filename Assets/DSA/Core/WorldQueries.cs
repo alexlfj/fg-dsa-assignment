@@ -18,24 +18,26 @@ namespace FrontierDispatch.Core
     public sealed class WorldQueries
     {
         private readonly WorldData _world;
+        
+        private readonly Dictionary<int, Location?> _locations = new Dictionary<int, Location?>();
 
         public WorldQueries(WorldData world)
         {
             _world = world ?? throw new ArgumentNullException(nameof(world));
+            CreateDictionary();
+        }
+
+        private void CreateDictionary()
+        {
+            foreach (var location in _world.Locations)
+            {
+                _locations.Add(location.Id, location);
+            }
         }
 
         public Location? FindLocationById(int id)
         {
-            for (int i = 0; i < _world.Locations.Count; ++i)
-            {
-                Location location = _world.Locations[i];
-                if (location.Id == id)
-                {
-                    return location;
-                }
-            }
-
-            return null;
+            return _locations.GetValueOrDefault(id);
         }
 
         public IReadOnlyList<Connection> FindOutgoingConnections(int fromLocationId)

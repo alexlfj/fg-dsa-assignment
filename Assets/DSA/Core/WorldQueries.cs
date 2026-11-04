@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FrontierDispatch.Core
 {
@@ -20,6 +21,7 @@ namespace FrontierDispatch.Core
         private readonly WorldData _world;
         
         private readonly Dictionary<int, Location?> _locations = new Dictionary<int, Location?>();
+        private readonly Dictionary<int, List<Connection>> _connections = new Dictionary<int, List<Connection>>();
 
         public WorldQueries(WorldData world)
         {
@@ -33,6 +35,18 @@ namespace FrontierDispatch.Core
             {
                 _locations.Add(location.Id, location);
             }
+
+            foreach (var connection in _world.Connections)
+            {
+                if (!_connections.ContainsKey(connection.FromLocationId))
+                {
+                    _connections.Add(connection.FromLocationId, new List<Connection>());
+                    
+                }
+
+                _connections[connection.FromLocationId].Add(connection);
+            }
+           
         }
 
         public Location? FindLocationById(int id)
@@ -42,17 +56,7 @@ namespace FrontierDispatch.Core
 
         public IReadOnlyList<Connection> FindOutgoingConnections(int fromLocationId)
         {
-            var result = new List<Connection>();
-            for (int i = 0; i < _world.Connections.Count; ++i)
-            {
-                Connection connection = _world.Connections[i];
-                if (connection.FromLocationId == fromLocationId)
-                {
-                    result.Add(connection);
-                }
-            }
-
-            return result;
+            return _connections.GetValueOrDefault(fromLocationId);
         }
     }
 }

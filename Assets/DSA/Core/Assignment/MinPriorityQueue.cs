@@ -41,9 +41,8 @@ namespace FrontierDispatch.Core
             }  
               
             Entry dequeuedEntry = _heap[0];  
-              
-            Entry lastEntry = _heap[^1];  
-            int lastEntryIndex = _heap.Count - 1;  
+            
+            int lastEntryIndex = _heap.Count - 1;
               
             Swap(0, lastEntryIndex);  
               
@@ -130,6 +129,8 @@ namespace FrontierDispatch.Core
         }  
 
         
+        
+         
         private readonly struct Entry
         {
             public Entry(T item, int priority)

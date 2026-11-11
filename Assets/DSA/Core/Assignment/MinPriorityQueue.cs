@@ -3,64 +3,133 @@ using System.Collections.Generic;
 
 namespace FrontierDispatch.Core
 {
-    // Assignment Phase 3. Implement as a binary min-heap.
-
-    /// <summary>
-    /// A minimum-priority queue implemented as a binary min-heap.
-    ///
-    /// Items with lower integer priority values should be returned before
-    /// items with higher priority values.
-    ///
-    /// This class is intentionally incomplete in the assignment starter.
-    /// </summary>
     public sealed class MinPriorityQueue<T>
     {
-        // The list stores the physical representation of the binary heap.
-        // Your implementation is responsible for preserving the min-heap invariant.
         private readonly List<Entry> _heap = new List<Entry>();
-
-        /// <summary>
-        /// Number of items currently stored in the queue.
-        /// </summary>
+        
         public int Count => _heap.Count;
-
-        /// <summary>
-        /// Adds an item with the supplied priority.
-        /// Lower priority values are removed before higher priority values.
-        /// </summary>
-        public void Enqueue(T item, int priority)
-        {
-            // TODO: insert the new entry and restore the min-heap invariant.
-            throw new NotImplementedException();
+        
+        public void Enqueue(T item, int priority)  
+        {  
+            Entry entry = new Entry(item, priority);  
+  
+            _heap.Add(entry);  
+    
+            int entryIndex = _heap.Count - 1;  
+      
+            SiftUp(entryIndex);  
         }
-
-        /// <summary>
-        /// Returns the minimum-priority item without removing it.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the queue is empty.
-        /// </exception>
-        public T Peek()
+        
+        public T PeekNext()
         {
-            // TODO: return the current minimum without changing the queue.
-            throw new NotImplementedException();
-        }
+            return _heap.Count == 0 ? throw new InvalidOperationException("The dispatch queue is empty.") : _heap[0].Item;
 
-        /// <summary>
-        /// Removes and returns the minimum-priority item.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when the queue is empty.
-        /// </exception>
-        public T Dequeue()
-        {
-            // TODO: remove the minimum item and restore the min-heap invariant.
-            throw new NotImplementedException();
-        }
+        }  
+        
+        public T Dequeue()  
+        {  
+            if (_heap.Count == 0)  
+            {  
+                throw new InvalidOperationException("The dispatch queue is empty.");  
+            }  
+  
+            if (_heap.Count == 1)  
+            {  
+                var entry = _heap[0];  
+                _heap.RemoveAt(0);  
+                return entry.Item;  
+            }  
+              
+            Entry dequeuedEntry = _heap[0];  
+              
+            Entry lastEntry = _heap[^1];  
+            int lastEntryIndex = _heap.Count - 1;  
+              
+            Swap(0, lastEntryIndex);  
+              
+            _heap.RemoveAt(lastEntryIndex);  
+              
+            SiftDown(0);  
+              
+            return dequeuedEntry.Item;  
+  
+        }  
 
-        /// <summary>
-        /// Stores one item together with the priority used by the heap.
-        /// </summary>
+        
+        private void SiftUp(int index)  
+        {  
+            int parentIndex = ParentIndex(index);  
+      
+            while (_heap[parentIndex].Priority > _heap[index].Priority)  
+            {  
+                Swap(parentIndex, index);  
+          
+                index = parentIndex;  
+                parentIndex = ParentIndex(index);  
+            }  
+        }
+        
+        private void SiftDown(int index)  
+        {  
+            while (true)  
+            {  
+                int leftIndex = LeftChildIndex(index);  
+                int rightIndex = RightChildIndex(index);  
+                int lowestChildIndex = index;  
+                  
+                if (IsInHeap(rightIndex))  
+                {  
+                    lowestChildIndex = _heap[leftIndex].Priority < _heap[rightIndex].Priority ? leftIndex : rightIndex;  
+                }  
+  
+                if (IsInHeap(leftIndex) && !IsInHeap(rightIndex))  
+                {  
+                    lowestChildIndex = leftIndex;  
+                }  
+  
+                if (!IsInHeap(leftIndex))  
+                {  
+                    return;  
+                }  
+                  
+                if (_heap[lowestChildIndex].Priority >= _heap[index].Priority)  
+                {  
+                    return;  
+                }  
+  
+                Swap(lowestChildIndex, index);  
+                index = lowestChildIndex;  
+            }  
+        }  
+        
+        private static int ParentIndex(int index)  
+        {  
+            return (index - 1) / 2;  
+        }  
+  
+        private static int LeftChildIndex(int index)  
+        {  
+            return 2 * index + 1;  
+        }  
+  
+        private static int RightChildIndex(int index)  
+        {  
+            return 2 * index + 2;  
+        }  
+  
+        private void Swap(int a, int b)  
+        {  
+            Entry temp = _heap[a];  
+            _heap[a] = _heap[b];  
+            _heap[b] = temp;  
+        }
+          
+        private bool IsInHeap(int index)  
+        {  
+            return index <= _heap.Count - 1;  
+        }  
+
+        
         private readonly struct Entry
         {
             public Entry(T item, int priority)

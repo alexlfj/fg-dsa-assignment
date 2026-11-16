@@ -24,7 +24,12 @@ namespace FrontierDispatch.Core
         {
             return _heap.Count == 0 ? throw new InvalidOperationException("The dispatch queue is empty.") : _heap[0].Item;
 
-        }  
+        }
+
+        public Entry Peek()
+        {
+            return _heap[0];
+        }
         
         public T Dequeue()  
         {  
@@ -126,12 +131,10 @@ namespace FrontierDispatch.Core
         private bool IsInHeap(int index)  
         {  
             return index <= _heap.Count - 1;  
-        }  
+        }
 
-        
-        
-         
-        private readonly struct Entry
+
+        public readonly struct Entry
         {
             public Entry(T item, int priority)
             {

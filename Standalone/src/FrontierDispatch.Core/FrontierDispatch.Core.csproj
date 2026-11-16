@@ -8,5 +8,23 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../../Assets/DSA/Core/**/*.cs" LinkBase="Core" />
+    <Compile Update="..\..\..\Assets\DSA\Core\Assignment\TEMP.cs">
+      <Link>Core\Assignment\TEMP.cs</Link>
+    </Compile>
+    <Compile Update="..\..\..\Assets\DSA\Core\Assignment\TEMP ASTAR.cs">
+      <Link>Core\Assignment\TEMP ASTAR.cs</Link>
+    </Compile>
+    <Compile Update="..\..\..\Assets\DSA\Core\Reference\TEMP.cs">
+      <LinkBase>Core\</LinkBase>
+      <Link>Core\Reference\TEMP.cs</Link>
+    </Compile>
+    <Compile Update="..\..\..\Assets\DSA\Core\Reference\TEMP ASTAR.cs">
+      <LinkBase>Core\</LinkBase>
+      <Link>Core\Reference\TEMP ASTAR.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="../../../Assets/DSA/Core/Reference/**" />
+    <None Include="../../../Assets/DSA/Core/Reference/**" LinkBase="Core/Reference" />
   </ItemGroup>
 </Project>

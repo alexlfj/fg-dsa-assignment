@@ -15,29 +15,25 @@ namespace FrontierDispatch.Core
             TotalCost = totalCost;
             ExpandedCount = expandedCount;
         }
-
-        /// <summary>
-        /// True when a route to the requested goal was found.
-        /// </summary>
+        
         public bool Found { get; }
-
-        /// <summary>
-        /// Location IDs making up the resulting route, in traversal order.
-        /// For a successful route, this includes the start and goal.
-        /// </summary>
         public IReadOnlyList<int> LocationIds { get; }
-
-        /// <summary>
-        /// Sum of the connection travel costs along the resulting route.
-        /// </summary>
         public int TotalCost { get; }
-
-        /// <summary>
-        /// Number of locations expanded by the search.
-        ///
-        /// This can be useful when comparing search behavior independently
-        /// of wall-clock timing.
-        /// </summary>
         public int ExpandedCount { get; }
+        
+        public static RouteResult Success(IReadOnlyList<int> path, int totalCost, int expandedNodes)
+        {
+            if (path == null)
+            {
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            return new RouteResult(true, path, totalCost, expandedNodes);
+        }
+
+        public static RouteResult NotFound(int expandedNodes)
+        {
+            return new RouteResult(false, Array.Empty<int>(), 0, expandedNodes);
+        }
     }
 }

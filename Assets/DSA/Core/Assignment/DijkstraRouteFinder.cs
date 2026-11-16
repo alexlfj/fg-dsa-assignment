@@ -54,15 +54,15 @@ namespace FrontierDispatch.Core
                     return RouteResult.Success(Path(), bestCost[goalLocationId], expandedNodes);
                 }
 
-                foreach (Connection edge in _worldQuery.FindOutgoingConnections(current.Item))
+                foreach (Connection connection in _worldQuery.FindOutgoingConnections(current.Item))
                 {
-                    int currentCost = bestCost[edge.FromLocationId] + edge.TravelCost;
+                    int currentCost = bestCost[connection.FromLocationId] + connection.TravelCost;
 
-                    if (!bestCost.ContainsKey(edge.ToLocationId) || currentCost < bestCost[edge.ToLocationId])
+                    if (!bestCost.ContainsKey(connection.ToLocationId) || currentCost < bestCost[connection.ToLocationId])
                     {
-                        bestCost[edge.ToLocationId] = currentCost;
-                        cameFrom[edge.ToLocationId] = edge.FromLocationId;
-                        frontier.Enqueue(edge.ToLocationId, bestCost[edge.ToLocationId]);
+                        bestCost[connection.ToLocationId] = currentCost;
+                        cameFrom[connection.ToLocationId] = connection.FromLocationId;
+                        frontier.Enqueue(connection.ToLocationId, bestCost[connection.ToLocationId]);
                     }
                 }
             }

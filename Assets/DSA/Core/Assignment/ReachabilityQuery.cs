@@ -51,7 +51,7 @@ namespace FrontierDispatch.Core
                 {
                     int currentCost = bestCost[connection.FromLocationId] + connection.TravelCost;
 
-                    if (!bestCost.ContainsKey(connection.ToLocationId) || currentCost < bestCost[connection.ToLocationId])
+                    if ((!bestCost.ContainsKey(connection.ToLocationId) || currentCost < bestCost[connection.ToLocationId]) && currentCost <= maxTravelCost)
                     {
                         bestCost[connection.ToLocationId] = currentCost;
                         cameFrom[connection.ToLocationId] = connection.FromLocationId;

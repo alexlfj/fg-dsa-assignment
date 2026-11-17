@@ -60,7 +60,7 @@ namespace FrontierDispatch.Core
             {
                 return _connections.GetValueOrDefault(fromLocationId);
             }
-
+            
             return new List<Connection>();
         }
     }

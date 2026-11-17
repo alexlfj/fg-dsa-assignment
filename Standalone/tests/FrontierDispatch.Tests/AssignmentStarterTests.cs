@@ -83,6 +83,22 @@ namespace FrontierDispatch.Tests
         }
         
         [Test]
+        public void Reachability_BudgetJustBelowPathCost()
+        {
+            var query = new ReachabilityQuery(SampleWorldFactory.CreateSmall());
+            var result = query.FindReachable(101, 13);
+            Assert.That(result.ContainsKey(734), Is.False);
+        }
+        
+        [Test]
+        public void Reachability_BudgetIsExactlyPathCost()
+        {
+            var query = new ReachabilityQuery(SampleWorldFactory.CreateSmall());
+            var result = query.FindReachable(101, 14);
+            Assert.That(result.ContainsKey(734), Is.True);
+        }
+        
+        [Test]
         public void Reachability_HandlesDisconnectedNode()
         {
             var query = new ReachabilityQuery(SampleWorldFactory.CreateSmall());

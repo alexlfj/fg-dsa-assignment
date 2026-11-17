@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace FrontierDispatch.Core
 {
     public sealed class DijkstraRouteFinder
     {
-        private readonly WorldData _world;
-
         private readonly WorldQueries _worldQuery;
 
-        public DijkstraRouteFinder(WorldData world)
+        public DijkstraRouteFinder(WorldData? world)
         {
-            _world = world ?? throw new ArgumentNullException(nameof(world));
+            if (world == null)
+            {
+                throw new ArgumentNullException(nameof(world));
+            }
+            
             _worldQuery = new WorldQueries(world);
         }
 

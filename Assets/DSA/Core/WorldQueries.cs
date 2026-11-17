@@ -56,7 +56,12 @@ namespace FrontierDispatch.Core
 
         public IReadOnlyList<Connection> FindOutgoingConnections(int fromLocationId)
         {
-            return _connections.GetValueOrDefault(fromLocationId);
+            if (_connections.TryGetValue(fromLocationId, out _))
+            {
+                return _connections.GetValueOrDefault(fromLocationId);
+            }
+
+            return new List<Connection>();
         }
     }
 }

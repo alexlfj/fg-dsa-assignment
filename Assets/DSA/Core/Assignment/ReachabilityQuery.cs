@@ -21,7 +21,6 @@ namespace FrontierDispatch.Core
         public IReadOnlyDictionary<int, int> FindReachable(int startLocationId, int maxTravelCost)
         {
             Dictionary<int, int> bestCost = new(); // Key: Location ID, Value: Cost 
-            Dictionary<int, int> cameFrom = new(); // Key: Location ID from, Location ID to
             MinPriorityQueue<int> frontier = new();
             
             if (_worldQuery.FindLocationById(startLocationId) == null)
@@ -54,7 +53,6 @@ namespace FrontierDispatch.Core
                     if ((!bestCost.ContainsKey(connection.ToLocationId) || currentCost < bestCost[connection.ToLocationId]) && currentCost <= maxTravelCost)
                     {
                         bestCost[connection.ToLocationId] = currentCost;
-                        cameFrom[connection.ToLocationId] = connection.FromLocationId;
                         frontier.Enqueue(connection.ToLocationId, bestCost[connection.ToLocationId]);
                     }
                 }

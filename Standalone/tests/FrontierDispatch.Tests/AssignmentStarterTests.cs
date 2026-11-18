@@ -1,20 +1,13 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using FrontierDispatch.Core;
 
 namespace FrontierDispatch.Tests
 {
-    /// <summary>
-    /// Small contract examples for later assignment phases.
-    ///
-    /// These are not an exhaustive assignment test suite.
-    /// Students are expected to enable the relevant tests as they reach each
-    /// phase and add meaningful tests of their own, including edge cases.
-    /// </summary>
     public sealed class AssignmentStarterTests
     {
-        // These tests document later assignment contracts without making the
-        // untouched baseline red. Remove Ignore when you reach the named phase.
+        #region PriorityQueue Tests
 
         [Test]
         public void PriorityQueue_EnqueueAndDequeue_ReturnsLowestPriorityFirst()
@@ -65,6 +58,9 @@ namespace FrontierDispatch.Tests
             Assert.That(queue.Dequeue(), Is.EqualTo("cheap"));
             Assert.That(queue.Dequeue(), Is.EqualTo("also cheap"));
         }
+        #endregion
+        
+        #region Dijkstra's Tests
 
         [Test]
         public void Dijkstra_StartEqualsGoal_ReturnsZeroCostRoute()
@@ -97,6 +93,21 @@ namespace FrontierDispatch.Tests
             Assert.That(result.Found, Is.False);
         }
         
+        [Test]
+        public void Dijkstra_BlockedFirstNeighbour_StillTriesLaterNeighbours()
+        {
+            var finder = new DijkstraRouteFinder(SampleWorldFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(101, 734, [512]);
+            
+
+            Assert.That(result.Found, Is.True);
+            Assert.That(result.TotalCost, Is.EqualTo(15));
+            Assert.That(result.LocationIds, Is.EqualTo([101, 310, 734]));
+        }
+        
+        #endregion
+        
+        #region Reachability Tests
 
         [Test]
         public void Reachability_ZeroBudget_IncludesStartAtZeroCost()
@@ -139,5 +150,53 @@ namespace FrontierDispatch.Tests
             var result = query.FindReachable(666, 0);
             Assert.That(result.ContainsKey(999), Is.True);
         }
+
+        #endregion
+        
+        #region A* Tests
+        [Test]
+        public void AStar_StartEqualsGoal_ReturnsZeroCostRoute()
+        {
+            var finder = new AStarRouteFinder(WorldDatasetFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(0, 0);
+            
+            Assert.That(result.Found, Is.True);
+            Assert.That(result.TotalCost, Is.EqualTo(0));
+            Assert.That(result.LocationIds, Is.EqualTo([0]));
+        }
+        
+        [Test]
+        public void AStar_ReturnsLowestCostPath()
+        {
+            var finder = new AStarRouteFinder(SampleWorldFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(101, 734);
+            
+            Assert.That(result.Found, Is.True);
+            Assert.That(result.TotalCost, Is.EqualTo(14));
+            Assert.That(result.LocationIds, Is.EqualTo([101, 310, 512, 734]));
+        }
+        
+        [Test]
+        public void AStar_HandlesImpossiblePath()
+        {
+            var finder = new AStarRouteFinder(SampleWorldFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(101, 666);
+            
+            Assert.That(result.Found, Is.False);
+        }
+        
+        [Test]
+        public void AStar_BlockedFirstNeighbour_StillTriesLaterNeighbours()
+        {
+            var finder = new AStarRouteFinder(SampleWorldFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(101, 734, [512]);
+            
+
+            Assert.That(result.Found, Is.True);
+            Assert.That(result.TotalCost, Is.EqualTo(15));
+            Assert.That(result.LocationIds, Is.EqualTo([101, 310, 734]));
+        }
+        
+        #endregion 
     }
 }

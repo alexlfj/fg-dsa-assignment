@@ -17,7 +17,7 @@ namespace FrontierDispatch.Core
             _worldQuery = new WorldQueries(world);
         }
 
-        public RouteResult FindRoute(int startLocationId, int goalLocationId)
+        public RouteResult FindRoute(int startLocationId, int goalLocationId, List<int> blocked = null)
         {
             if (_worldQuery.FindLocationById(startLocationId) == null || _worldQuery.FindLocationById(goalLocationId) == null)
             {
@@ -43,6 +43,11 @@ namespace FrontierDispatch.Core
                 MinPriorityQueue<int>.Entry current = frontier.Peek();
                 frontier.Dequeue();
                 
+                if (blocked != null && blocked.Contains(current.Item))
+                {
+                    return RouteResult.NotFound(expandedNodes);
+                }
+                
                 if (current.Priority > bestCost[current.Item])
                 {
                     continue;
@@ -59,6 +64,11 @@ namespace FrontierDispatch.Core
                 {
                     int currentCost = bestCost[connection.FromLocationId] + connection.TravelCost;
 
+                    if (blocked != null && blocked.Contains(connection.ToLocationId))
+                    {
+                        continue;
+                    }
+                    
                     if (!bestCost.ContainsKey(connection.ToLocationId) || currentCost < bestCost[connection.ToLocationId])
                     {
                         bestCost[connection.ToLocationId] = currentCost;

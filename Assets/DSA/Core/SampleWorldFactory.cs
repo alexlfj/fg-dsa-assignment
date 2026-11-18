@@ -12,7 +12,8 @@ namespace FrontierDispatch.Core
                 new Location(512, "Old Mine", new WorldPosition(4f, 2f), "Industry"),
                 new Location(734, "North Gate", new WorldPosition(3f, 5f), "Gate"),
                 new Location(901, "Farm", new WorldPosition(-3f, 5f), "Farm"),
-                new Location(666, "Hell", new WorldPosition(-4, 1f), "Gate")
+                new Location(666, "Hell", new WorldPosition(-4, 1f), "Gate"),
+                new Location(999, "Persephone's Garden", new WorldPosition(-4f, 2f), "Farm")
             };
 
             var connections = new[]
@@ -24,7 +25,8 @@ namespace FrontierDispatch.Core
                 new Connection(310, 512, 4), new Connection(512, 310, 4),
                 new Connection(310, 734, 8), new Connection(734, 310, 8),
                 new Connection(512, 734, 3), new Connection(734, 512, 3),
-                new Connection(901, 734, 7), new Connection(734, 901, 7)
+                new Connection(901, 734, 7), new Connection(734, 901, 7),
+                new Connection(666, 999, 0), new Connection(999, 666, 0)
             };
 
             return new WorldData(locations, connections);

@@ -22,6 +22,10 @@
       <LinkBase>Core\</LinkBase>
       <Link>Core\Reference\TEMP ASTAR.cs</Link>
     </Compile>
+    <Compile Update="..\..\..\Assets\DSA\Core\Assignment\AStarRouteFinder.cs">
+      <LinkBase>Core\</LinkBase>
+      <Link>Core\Assignment\AStarRouteFinder.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="../../../Assets/DSA/Core/Reference/**" />

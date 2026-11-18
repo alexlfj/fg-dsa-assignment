@@ -40,6 +40,31 @@ namespace FrontierDispatch.Tests
             var queue = new MinPriorityQueue<string>();
             Assert.That(queue.Dequeue, Throws.TypeOf<InvalidOperationException>());
         }
+        
+        [Test]
+        public void PriorityQueue_MultipleDequeue_ReturnsLowestPriorityFirst()
+        {
+            var queue = new MinPriorityQueue<string>();
+            queue.Enqueue("cheap", 2);
+            queue.Enqueue("medium", 5);
+            queue.Dequeue();
+            queue.Enqueue("extremely expensive", 11);
+            queue.Enqueue("expensive", 9);
+            queue.Dequeue();
+            Assert.That(queue.Dequeue(), Is.EqualTo("expensive"));
+            Assert.That(queue.Dequeue(), Is.EqualTo("extremely expensive"));
+        }
+        
+        [Test]
+        public void PriorityQueue_HandlesDuplicatePriorities()
+        {
+            var queue = new MinPriorityQueue<string>();
+            queue.Enqueue("cheap", 2);
+            queue.Enqueue("also cheap", 2);
+            queue.Enqueue("medium", 5);
+            Assert.That(queue.Dequeue(), Is.EqualTo("cheap"));
+            Assert.That(queue.Dequeue(), Is.EqualTo("also cheap"));
+        }
 
         [Test]
         public void Dijkstra_StartEqualsGoal_ReturnsZeroCostRoute()
@@ -105,6 +130,14 @@ namespace FrontierDispatch.Tests
             var result = query.FindReachable(666, 0);
             Assert.That(result.ContainsKey(666), Is.True);
             Assert.That(result.ContainsKey(0), Is.False);
+        }
+        
+        [Test]
+        public void Reachability_ZeroBudget_HandlesZeroEdgeConnections()
+        {
+            var query = new ReachabilityQuery(SampleWorldFactory.CreateSmall());
+            var result = query.FindReachable(666, 0);
+            Assert.That(result.ContainsKey(999), Is.True);
         }
     }
 }

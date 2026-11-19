@@ -105,6 +105,16 @@ namespace FrontierDispatch.Tests
             Assert.That(result.LocationIds, Is.EqualTo([101, 310, 734]));
         }
         
+        [Test]
+        public void Dijkstra_BlockedAllStartNeighbours_ReturnsNotFound()
+        {
+            var finder = new DijkstraRouteFinder(SampleWorldFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(101, 734, [205, 310]);
+
+            Assert.That(result.Found, Is.False);
+            Assert.That(result.LocationIds, Is.Empty);
+        }
+        
         #endregion
         
         #region Reachability Tests
@@ -207,6 +217,16 @@ namespace FrontierDispatch.Tests
             Location? goal = query.FindLocationById(734);
 
             Assert.That(Heuristics.Euclidian(start, goal), Is.EqualTo(9));
+        }
+        
+        [Test]
+        public void AStar_BlockedAllStartNeighbours_ReturnsNotFound()
+        {
+            var finder = new AStarRouteFinder(SampleWorldFactory.CreateSmall());
+            RouteResult result = finder.FindRoute(101, 734, [205, 310]);
+
+            Assert.That(result.Found, Is.False);
+            Assert.That(result.LocationIds, Is.Empty);
         }
         
         #endregion 

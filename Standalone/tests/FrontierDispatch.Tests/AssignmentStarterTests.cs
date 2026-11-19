@@ -197,6 +197,18 @@ namespace FrontierDispatch.Tests
             Assert.That(result.LocationIds, Is.EqualTo([101, 310, 734]));
         }
         
+        [Test]
+        public void AStar_EuclidianDistanceIsValid()
+        {
+            var world = SampleWorldFactory.CreateSmall();
+            var query = new WorldQueries(world);
+            
+            Location? start = query.FindLocationById(101);
+            Location? goal = query.FindLocationById(734);
+
+            Assert.That(Heuristics.Euclidian(start, goal), Is.EqualTo(9));
+        }
+        
         #endregion 
     }
 }

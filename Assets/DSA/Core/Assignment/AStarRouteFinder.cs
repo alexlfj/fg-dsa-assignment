@@ -52,7 +52,7 @@ namespace FrontierDispatch.Core
                     return RouteResult.NotFound(expandedNodes);
                 }
                 
-                if (current.Priority > bestCost[current.Item] + Heuristics.Manhattan(_worldQuery.FindLocationById(current.Item), goalNode))
+                if (current.Priority > bestCost[current.Item] + Heuristics.Euclidian(_worldQuery.FindLocationById(current.Item), goalNode))
                 {
                     continue;
                 }
@@ -77,7 +77,7 @@ namespace FrontierDispatch.Core
                     {
                         bestCost[connection.ToLocationId] = currentCost;
                         cameFrom[connection.ToLocationId] = connection.FromLocationId;
-                        frontier.Enqueue(connection.ToLocationId, bestCost[connection.ToLocationId] + Heuristics.Manhattan(_worldQuery.FindLocationById(connection.ToLocationId), goalNode));
+                        frontier.Enqueue(connection.ToLocationId, bestCost[connection.ToLocationId] + Heuristics.Euclidian(_worldQuery.FindLocationById(connection.ToLocationId), goalNode));
                     }
                 }
             }

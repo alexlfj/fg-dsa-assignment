@@ -4,9 +4,12 @@ namespace FrontierDispatch.Core
 {
 	public static class Heuristics
 	{
-		public static int Manhattan(Location? from, Location goal)
+		public static int Euclidian(Location? from, Location goal)
 		{
-			return (int)(MathF.Sqrt((from.Position.X - goal.Position.X)^2 + (from.Position.Y - goal.Position.Y)^2));
+			var dX = from.Position.X - goal.Position.X;
+			var dY = from.Position.Y - goal.Position.Y;
+			
+			return (int)(MathF.Sqrt(dX*dX + dY*dY));
 		}
 	}
 }

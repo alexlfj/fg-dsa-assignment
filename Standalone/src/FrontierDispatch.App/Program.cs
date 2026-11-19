@@ -1,10 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using FrontierDispatch.Core;
 
 if (args.Length > 0 && args[0] == "--baseline")
 {
     RunBaseline();
+    return;
+}
+
+if (args.Length > 0 && args[0] == "--pathfinding")
+{
+    RunPathFinding();
     return;
 }
 
@@ -34,7 +42,7 @@ static void RunBaseline()
     buildSw.Stop();
 
     int checksum = 0;
-    const int iterations = 5000;
+    const int iterations = 1000;
 
     // B + C. Repeated query workload
     var querySw = Stopwatch.StartNew();
@@ -96,4 +104,89 @@ static void RunBaseline()
     // Prints one row: label left-aligned, value right-aligned.
     void Row(string label, string value) =>
         Console.WriteLine($"│ {label.PadRight(labelWidth)} │ {value.PadLeft(valueWidth)} │");
+}
+
+static void RunPathFinding()
+{
+    // One case per world in SampleWorldFactory. Every world has Harbor (101) and North Gate (734).
+    RunPathFindingCase("CreateSmall", SampleWorldFactory.CreateSmall(), origin: 101, goal: 734);
+    RunPathFindingCase("CreateMedium", SampleWorldFactory.CreateMedium(), origin: 101, goal: 734);
+    RunPathFindingCase("CreateLarge", SampleWorldFactory.CreateLarge(), origin: 101, goal: 734);
+}
+
+static void RunPathFindingCase(string worldName, WorldData world, int origin, int goal)
+{
+    int checksum = 0;
+    const int iterations = 1000;
+
+
+    var dijkstraStopwatch = Stopwatch.StartNew();
+    int dijkstraExpandedNodes = 0;
+    for (int i = 0; i < iterations; ++i)
+    {
+        var finder = new DijkstraRouteFinder(world);
+        RouteResult result = finder.FindRoute(origin, goal);
+        dijkstraExpandedNodes += result.ExpandedCount;
+    }
+    dijkstraStopwatch.Stop();
+    
+    
+    var astarStopwatch = Stopwatch.StartNew();
+    int astarExpandedNodes = 0;
+    for (int i = 0; i < iterations; ++i)
+    {
+        var finder = new AStarRouteFinder(world);
+        RouteResult result = finder.FindRoute(origin, goal);
+        astarExpandedNodes += result.ExpandedCount;
+    }
+    astarStopwatch.Stop();
+    
+
+    // Building results table
+    double dijkstraMs = dijkstraStopwatch.Elapsed.TotalMilliseconds;
+    double astarMs = astarStopwatch.Elapsed.TotalMilliseconds;
+
+    // Box-drawing characters need UTF-8 output on Windows consoles.
+    Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+    const int labelWidth = 28;
+    const int valueWidth = 14;
+    string labelLine = new string('─', labelWidth + 2);
+    string valueLine = new string('─', valueWidth + 2);
+
+    // Workload table (two columns)
+    Console.WriteLine("");
+    Console.WriteLine("");
+    Console.WriteLine($"┌{labelLine}┬{valueLine}┐");
+    Row("Pathfinding workload", "Value");
+    Console.WriteLine($"├{labelLine}┼{valueLine}┤");
+    Row("World", worldName);
+    Row("Locations", world.Locations.Count.ToString("N0"));
+    Row("Connections", world.Connections.Count.ToString("N0"));
+    Row("Iterations", iterations.ToString("N0"));
+    Row("Route (start → goal)", $"{origin} → {goal}");
+    Console.WriteLine($"├{labelLine}┼{valueLine}┤");
+    Row("Checksum", checksum.ToString());
+    Console.WriteLine($"└{labelLine}┴{valueLine}┘");
+    Console.WriteLine("");
+
+    // Comparison table (three columns)
+    Console.WriteLine($"┌{labelLine}┬{valueLine}┬{valueLine}┐");
+    Row3("Comparison", "Dijkstra", "A*");
+    Console.WriteLine($"├{labelLine}┼{valueLine}┼{valueLine}┤");
+    Row3("Total time", $"{dijkstraMs:F3} ms", $"{astarMs:F3} ms");
+    Row3("Avg time per route", $"{dijkstraMs / iterations:F4} ms", $"{astarMs / iterations:F4} ms");
+    Row3("Total expanded nodes", $"{dijkstraExpandedNodes}", $"{astarExpandedNodes}");
+    Row3("Avg expanded nodes per route", $"{dijkstraExpandedNodes / iterations}", $"{astarExpandedNodes / iterations}");
+    Console.WriteLine($"└{labelLine}┴{valueLine}┴{valueLine}┘");
+    Console.WriteLine("Absolute time varies by machine. Keep this result for before/after comparison.");
+    Console.WriteLine("");
+
+    // Prints one row: label left-aligned, value right-aligned.
+    void Row(string label, string value) =>
+        Console.WriteLine($"│ {label.PadRight(labelWidth)} │ {value.PadLeft(valueWidth)} │");
+
+    // Prints one row with two value columns: label left-aligned, values right-aligned.
+    void Row3(string label, string left, string right) =>
+        Console.WriteLine($"│ {label.PadRight(labelWidth)} │ {left.PadLeft(valueWidth)} │ {right.PadLeft(valueWidth)} │");
 }

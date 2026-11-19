@@ -11,5 +11,11 @@ namespace FrontierDispatch.Core
 			
 			return (int)(MathF.Sqrt(dX*dX + dY*dY));
 		}
+		
+		public static int Manhatan(Location? from, Location goal)
+		{
+			return Math.Abs(from.Position.X - goal.Position.X) + Math.Abs(from.Position.Y - goal.Position.Y);
+
+		}
 	}
 }

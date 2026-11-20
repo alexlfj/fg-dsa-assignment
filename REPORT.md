@@ -324,7 +324,7 @@ I started with Manhattan distance for the A\* heuristic, but it wasn't working w
 So I changed the formula to linear distance:
 
 ```c#
-return (int)(MathF.Sqrt(from.Position.X * goal.Position.X) + from.Position.Y + goal.Position.Y);
+return (int)(MathF.Sqrt(from.Position.X * goal.Position.X + from.Position.Y * goal.Position.Y));
 ```
 
 While reviewing my devlog with Claude, it pointed out that my heuristic was not actually computing the linear distance. For `Harbor (-4, -1)` → `North Gate (3, 5)`, the code takes `MathF.Sqrt(-4 * 3)`, which gives `NaN`. My formula multiplied the Xs instead of squaring their difference, added the Ys instead of squaring their difference, and the square root only covered the X part.

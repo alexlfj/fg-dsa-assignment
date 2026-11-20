@@ -40,11 +40,6 @@ namespace FrontierDispatch.Core
                 {
                     continue;
                 }
-                
-                if (bestCost[current.Item] > maxTravelCost)
-                {
-                    return bestCost;
-                }
 
                 foreach (Connection connection in _worldQuery.FindOutgoingConnections(current.Item))
                 {

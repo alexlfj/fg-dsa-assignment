@@ -150,7 +150,7 @@ namespace FrontierDispatch.Tests
             var query = new ReachabilityQuery(SampleWorldFactory.CreateSmall());
             var result = query.FindReachable(666, 0);
             Assert.That(result.ContainsKey(666), Is.True);
-            Assert.That(result.ContainsKey(0), Is.False);
+            Assert.That(result.ContainsKey(101), Is.False);
         }
         
         [Test]
